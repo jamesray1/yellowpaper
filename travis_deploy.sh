@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ev
 
 SHA=`git rev-parse --short --verify HEAD`
 
@@ -10,8 +10,11 @@ git checkout --orphan gh-pages
 git rm --cached -r .
 echo "# Automatic build" > README.md
 echo "Built pdf from \`$SHA\`. See https://github.com/ethereum/yellowpaper/ for details." >> README.md
+echo <<EOF > index.html
+<html><head><meta http-equiv="refresh" content="0; url=paper.pdf" /></head><body></body></html>
+EOF
 mv Paper.pdf paper.pdf
-git add -f paper.pdf
+git add -f README.md index.html paper.pdf
 git commit -m "Built pdf from {$SHA}."
 
 ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
